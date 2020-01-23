@@ -13,4 +13,4 @@ WALK_OF_FAME_URL = ("https://en.wikipedia.org/wiki/"
 OUTPUT_PATH = ("C:\\Users\\Ladyj\\Documents\\GitHub\\"
                + "Walk-Of-Fame-Marriage-Analysis\\output")
 
-NAMES_OUTPUT = OUTPUT_PATH + "\\walk_of_fame_names.csv"
+STARS_OUTPUT = OUTPUT_PATH + "\\walk_of_fame_stars.csv"
