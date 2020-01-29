@@ -40,16 +40,16 @@ def load_stars_dict():
 
 def scrape_star(name, link):
     html = get_star_html(link)
-    export_html(name, html)
+    export_html(name, str(html))
     return html
 
 def get_star_html(link):
     req = requests.get(link)
-    return str(BeautifulSoup(req.content, "html.parser"))
+    return BeautifulSoup(req.content, "html.parser")
 
-def export_html(name, html):
+def export_html(name, html_str):
     with open(config.HTML_OUTPUT_PATH + name +".txt", "w") as file:
-        file.write(html)
+        file.write(html_str)
 
 def is_group(html):
     pass
@@ -61,7 +61,8 @@ def is_fictional(html):
     pass
 
 def import_html(name):
-    pass
+    with open(config.HTML_OUTPUT_PATH + name +".txt", "r") as file:
+        return BeautifulSoup(file.read(), "html.parser")
 
 def add_data(star_dict, html):        
     star_dict["Birthdate"] = get_birthdate(html)
