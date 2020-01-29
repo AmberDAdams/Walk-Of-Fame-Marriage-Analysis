@@ -7,6 +7,7 @@ Created on Thu Jan 23 21:17:35 2020
 
 import requests
 import time
+import re
 import pandas as pd
 import config
 from bs4 import BeautifulSoup
@@ -52,13 +53,23 @@ def export_html(name, html_str):
         file.write(html_str)
 
 def is_group(html):
-    pass
+    catlinks = html.find("div", {"class": "mw-normal-catlinks"})
+    categories = " ".join([cat.text for cat in catlinks.find_all("li")])
+    if "births" not in categories and "fictional characters" not in categories:
+        return True
+    else:
+        return False
 
 def get_members(html):
     pass
 
 def is_fictional(html):
-    pass
+    catlinks = html.find("div", {"class": "mw-normal-catlinks"})
+    categories = " ".join([cat.text for cat in catlinks.find_all("li")])
+    if "fictional characters" in categories:
+        return True
+    else:
+        return False
 
 def import_html(name):
     with open(config.HTML_OUTPUT_PATH + name +".txt", "r") as file:
@@ -75,10 +86,27 @@ def add_data(star_dict, html):
     return star_dict
 
 def get_birthdate(html):
-    return ""
+    infobox = html.find("table", {"class": "infobox"})
+    for row in infobox.find_all("tr"):
+        if row.th is not None and row.th.text=="Born":
+            born_data = row.td.text
+    pattern = re.compile("(January|February|March|April|May|June|July|August" +
+                         "|September|October|November|December) +\\d{1,2}, +\\d{1,4}")
+    match = pattern.search(born_data.text)
+    return match.group()
 
 def get_deathdate(html):
-    return ""
+    infobox = html.find("table", {"class": "infobox"})
+    for row in infobox.find_all("tr"):
+        if row.th is not None and row.th.text=="Died":
+            born_data = row.td.text
+    pattern = re.compile("(January|February|March|April|May|June|July|August" +
+                         "|September|October|November|December) +\\d{1,2}, +\\d{1,4}")
+    match = pattern.search(born_data.text)
+    if match is not None:
+        return match.group()
+    else:
+        return ""
 
 def get_spouses(html):
     return ""
