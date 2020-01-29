@@ -14,5 +14,6 @@ OUTPUT_PATH = ("C:\\Users\\Ladyj\\Documents\\GitHub\\"
                + "Walk-Of-Fame-Marriage-Analysis\\output")
 
 STARS_OUTPUT = OUTPUT_PATH + "\\walk_of_fame_stars.csv"
+FILLED_DATA_OUTPUT = OUTPUT_PATH + "\\filled_data.csv"
 
 HTML_OUTPUT_PATH = OUTPUT_PATH + "\\star_html\\"

@@ -6,6 +6,7 @@ Created on Thu Jan 23 21:17:35 2020
 """
 
 import requests
+import time
 import pandas as pd
 import config
 from bs4 import BeautifulSoup
@@ -16,35 +17,44 @@ def scrape_star_pages(redownload=False):
     for star in stars_dict.keys():
         if redownload:
             #include 1 second delay between wikipedia hits
+            time.sleep(1)
             html = scrape_star(star, stars_dict[star]["Link"])
-            export_html(star, html)
+            if is_fictional(html):
+                del stars_dict[star]
+            elif is_group(html):
+                members = get_members(html)
+                for member in members.keys():
+                    html = scrape_star(member, members[member])
+                    stars_dict[star] = add_data(stars_dict[star], html)
+            else:
+                stars_dict[star] = add_data(stars_dict[star], html)
         else:
             html = import_html(star)
-            
-        stars_dict[star]["Birthdate"] = get_birthdate(html)
-        stars_dict[star]["Deathdate"] = get_deathdate(html)
-        stars_dict[star]["Spouses"] = get_spouses(html)
-        stars_dict[star]["Children"] = get_children(html)
-        stars_dict[star]["NetWorth"] = get_networth(html)
-        stars_dict[star]["Nationality"] = get_nationality(html)
-        stars_dict[star]["Gender"] = get_gender(html)
+            stars_dict[star] = add_data(stars_dict[star], html)
         
-    return pd.DataFrame(stars_dict)
+    return pd.DataFrame(stars_dict).transpose().reset_index(drop=False)
 
 def load_stars_dict():
     stars = pd.read_csv(config.STARS_OUTPUT)
     return stars.set_index(["Name"]).to_dict()["Link"]
 
 def scrape_star(name, link):
-    pass
+    html = get_star_html(link)
+    export_html(name, html)
+    return html
 
 def get_star_html(link):
-    pass
+    req = requests.get(link)
+    return str(BeautifulSoup(req.content, "html.parser"))
 
-def export_html(name, link):
-    pass
+def export_html(name, html):
+    with open(config.HTML_OUTPUT_PATH + name +".txt", "w") as file:
+        file.write(html)
 
 def is_group(html):
+    pass
+
+def get_members(html):
     pass
 
 def is_fictional(html):
@@ -53,24 +63,37 @@ def is_fictional(html):
 def import_html(name):
     pass
 
+def add_data(star_dict, html):        
+    star_dict["Birthdate"] = get_birthdate(html)
+    star_dict["Deathdate"] = get_deathdate(html)
+    star_dict["Spouses"] = get_spouses(html)
+    star_dict["Children"] = get_children(html)
+    star_dict["NetWorth"] = get_networth(html)
+    star_dict["Nationality"] = get_nationality(html)
+    star_dict["Gender"] = get_gender(html)
+    return star_dict
+
 def get_birthdate(html):
-    pass
+    return ""
 
 def get_deathdate(html):
-    pass
+    return ""
 
 def get_spouses(html):
-    pass
+    return ""
 
 def get_children(html):
-    pass
+    return ""
 
 def get_networth(html):
-    pass
+    return ""
 
 def get_nationality(html):
-    pass
+    return ""
 
 def get_gender(html):
-    pass
+    return ""
 
+if __name__ == "__main__":
+    filled_dataframe = scrape_star_pages(redownload=False)
+    filled_dataframe.to_csv(config.FILLED_DATA_OUTPUT, index=False)
