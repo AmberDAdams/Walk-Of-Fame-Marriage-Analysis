@@ -11,11 +11,29 @@ import config
 from bs4 import BeautifulSoup
 
 def scrape_star_pages(redownload=False):
-    #include 1 second delay between wikipedia hits
-    pass
+    stars_dict = load_stars_dict()
+    stars_dict = {star:{"Link": stars_dict[star]} for star in stars_dict.keys()}
+    for star in stars_dict.keys():
+        if redownload:
+            #include 1 second delay between wikipedia hits
+            html = scrape_star(star, stars_dict[star]["Link"])
+            export_html(star, html)
+        else:
+            html = import_html(star)
+            
+        stars_dict[star]["Birthdate"] = get_birthdate(html)
+        stars_dict[star]["Deathdate"] = get_deathdate(html)
+        stars_dict[star]["Spouses"] = get_spouses(html)
+        stars_dict[star]["Children"] = get_children(html)
+        stars_dict[star]["NetWorth"] = get_networth(html)
+        stars_dict[star]["Nationality"] = get_nationality(html)
+        stars_dict[star]["Gender"] = get_gender(html)
+        
+    return pd.DataFrame(stars_dict)
 
-def load_stars_list():
-    pass
+def load_stars_dict():
+    stars = pd.read_csv(config.STARS_OUTPUT)
+    return stars.set_index(["Name"]).to_dict()["Link"]
 
 def scrape_star(name, link):
     pass
@@ -27,6 +45,12 @@ def export_html(name, link):
     pass
 
 def is_group(html):
+    pass
+
+def is_fictional(html):
+    pass
+
+def import_html(name):
     pass
 
 def get_birthdate(html):
