@@ -24,7 +24,7 @@ def get_star_data():
     return pd.DataFrame(stars_dict).transpose().reset_index(drop=False)
 
 def import_html(file_path):
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         return BeautifulSoup(file.read(), "html.parser")
 
 def add_data(star_dict, html):        
@@ -42,23 +42,24 @@ def get_birthdate(html):
     for row in infobox.find_all("tr"):
         if row.th is not None and row.th.text=="Born":
             born_data = row.td.text
-    pattern = re.compile("(January|February|March|April|May|June|July|August" +
-                         "|September|October|November|December) +\\d{1,2}, +\\d{1,4}")
-    match = pattern.search(born_data.text)
-    return match.group()
+            pattern = re.compile("\\d*\\s?(January|February|March|April|May|June|July|August" +
+                                 "|September|October|November|December)\\s?\\d*,? +\\d{1,4}")
+            match = pattern.search(born_data)
+            if not match is None:
+                return match.group()
+    return ""
 
 def get_deathdate(html):
     infobox = html.find("table", {"class": "infobox"})
     for row in infobox.find_all("tr"):
         if row.th is not None and row.th.text=="Died":
-            born_data = row.td.text
-    pattern = re.compile("(January|February|March|April|May|June|July|August" +
-                         "|September|October|November|December) +\\d{1,2}, +\\d{1,4}")
-    match = pattern.search(born_data.text)
-    if match is not None:
-        return match.group()
-    else:
-        return ""
+            death_data = row.td.text
+            pattern = re.compile("\\d*\\s?(January|February|March|April|May|June|July|August" +
+                                 "|September|October|November|December)\\s?\\d*,? +\\d{1,4}")
+            match = pattern.search(death_data)
+            if not match is None:
+                return match.group()
+    return ""
 
 def get_spouses(html):
     return ""

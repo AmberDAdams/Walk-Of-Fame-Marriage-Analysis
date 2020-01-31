@@ -14,8 +14,8 @@ from bs4 import BeautifulSoup
 def scrape_star_pages():
     stars_dict = load_stars_dict()
     for star in stars_dict.keys():
-        #include 1 second delay between wikipedia hits
-        time.sleep(1)
+        #include greater than 1 second delay between wikipedia hits
+        time.sleep(1.2)
         html = get_star_html(stars_dict[star]["Link"])
         if is_fictional(html):
             del stars_dict[star]
@@ -38,7 +38,7 @@ def get_star_html(link):
     return BeautifulSoup(req.content, "html.parser")
 
 def export_html(name, html_str):
-    with open(config.HTML_OUTPUT_PATH + name +".txt", "w") as file:
+    with open(config.HTML_OUTPUT_PATH + name +".txt", "w", encoding="utf-8") as file:
         file.write(html_str)
 
 def is_group(html):
@@ -50,7 +50,7 @@ def is_group(html):
         return False
 
 def get_members(html):
-    pass
+    return {}
 
 def is_fictional(html):
     catlinks = html.find("div", {"class": "mw-normal-catlinks"})
