@@ -14,12 +14,14 @@ from bs4 import BeautifulSoup
 
 def get_star_data():
     stars_dict = {}
-    html_files = glob(HTML_OUTPUT_PATH + "*")
+    html_files = glob(config.HTML_OUTPUT_PATH + "*")
     for html_file in html_files:
-            stars_dict[html_file.split("\\")[-1][:-4]] = {
-                    "Link": html_file}
-            html = import_html(html_file)
-            stars_dict[star] = add_data(stars_dict[star], html)
+        star = html_file.split("\\")[-1][:-4]
+        stars_dict[star] = {
+                "Link": html_file}
+        html = import_html(html_file)
+        stars_dict[star] = add_data(stars_dict[star], html)
+    return pd.DataFrame(stars_dict).transpose().reset_index(drop=False)
 
 def import_html(file_path):
     with open(file_path, "r") as file:

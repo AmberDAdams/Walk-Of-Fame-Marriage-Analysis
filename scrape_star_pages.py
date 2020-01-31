@@ -13,7 +13,6 @@ from bs4 import BeautifulSoup
 
 def scrape_star_pages():
     stars_dict = load_stars_dict()
-    stars_dict = {star:{"Link": stars_dict[star]} for star in stars_dict.keys()}
     for star in stars_dict.keys():
         #include 1 second delay between wikipedia hits
         time.sleep(1)
@@ -30,7 +29,9 @@ def scrape_star_pages():
 
 def load_stars_dict():
     stars = pd.read_csv(config.STARS_OUTPUT)
-    return stars.set_index(["Name"]).to_dict()["Link"]
+    stars_dict = stars.set_index(["Name"]).to_dict()["Link"]
+    stars_dict = {star:{"Link": stars_dict[star]} for star in stars_dict.keys()}
+    return stars_dict
 
 def get_star_html(link):
     req = requests.get(link)
