@@ -49,3 +49,4 @@ def add_links_to_table(table, links, map_col):
 if __name__ == "__main__":
     stars = scrape_walk_of_fame()
     stars.to_csv(config.STARS_OUTPUT, index=False)
+    #after output, fill in empty links

@@ -17,13 +17,13 @@ def scrape_star_pages():
     for star in stars_dict.keys():
         #include 1 second delay between wikipedia hits
         time.sleep(1)
-        html = scrape_star(star, stars_dict[star]["Link"])
+        html = get_star_html(stars_dict[star]["Link"])
         if is_fictional(html):
             del stars_dict[star]
         elif is_group(html):
             members = get_members(html)
             for member in members.keys():
-                html = scrape_star(member, members[member])
+                html = get_star_html(members[member])
                 export_html(member, html)
         else:
             export_html(star, str(html))
@@ -31,10 +31,6 @@ def scrape_star_pages():
 def load_stars_dict():
     stars = pd.read_csv(config.STARS_OUTPUT)
     return stars.set_index(["Name"]).to_dict()["Link"]
-
-def scrape_star(name, link):
-    html = get_star_html(link)
-    return html
 
 def get_star_html(link):
     req = requests.get(link)
