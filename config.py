@@ -8,7 +8,7 @@ Created on Wed Jan 22 22:57:12 2020
 WIKIPEDIA_URL = "https://en.wikipedia.org"
 
 WALK_OF_FAME_URL = ("https://en.wikipedia.org/wiki/" 
-                    + "List_of_stars_on_the_Hollywood_Walk_of_Fame")
+                    + "List_of_actors_with_Hollywood_Walk_of_Fame_motion_picture_stars")
 
 OUTPUT_PATH = ("C:\\Users\\Ladyj\\Documents\\GitHub\\"
                + "Walk-Of-Fame-Marriage-Analysis\\output")
