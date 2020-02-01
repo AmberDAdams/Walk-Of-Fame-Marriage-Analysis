@@ -34,7 +34,6 @@ def add_data(star_dict, html):
     star_dict["Children"] = get_children(html)
     star_dict["NetWorth"] = get_networth(html)
     star_dict["Nationality"] = get_nationality(html)
-    star_dict["Gender"] = get_gender(html)
     return star_dict
 
 def get_birthdate(html):
@@ -62,6 +61,12 @@ def get_deathdate(html):
     return ""
 
 def get_spouses(html):
+    infobox = html.find("table", {"class": "infobox"})
+    for row in infobox.find_all("tr"):
+        if row.th is not None and row.th.text=="Spouse(s)":
+            spouse_data = row.td.text
+            marriage_dates = re.findall("m. \\d{4}", spouse_data)
+            return len(marriage_dates)
     return ""
 
 def get_children(html):
@@ -71,9 +76,6 @@ def get_networth(html):
     return ""
 
 def get_nationality(html):
-    return ""
-
-def get_gender(html):
     return ""
 
 if __name__ == "__main__":
