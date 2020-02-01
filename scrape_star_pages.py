@@ -21,7 +21,7 @@ def scrape_star_pages():
 
 def load_stars_dict():
     stars = pd.read_csv(config.STARS_OUTPUT)
-    stars_dict = stars.set_index(["Name"]).to_dict()["Link"]
+    stars_dict = stars.set_index(["Actor"]).to_dict()["Link"]
     stars_dict = {star:{"Link": stars_dict[star]} for star in stars_dict.keys()}
     return stars_dict
 

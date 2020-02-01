@@ -70,6 +70,10 @@ def get_spouses(html):
     return ""
 
 def get_children(html):
+    infobox = html.find("table", {"class": "infobox"})
+    for row in infobox.find_all("tr"):
+        if row.th is not None and row.th.text=="Children":
+            return row.td.text.strip()
     return ""
 
 def get_networth(html):
