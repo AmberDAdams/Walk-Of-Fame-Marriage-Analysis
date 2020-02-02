@@ -27,17 +27,23 @@ def import_html(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return BeautifulSoup(file.read(), "html.parser")
 
-def add_data(star_dict, html):        
-    star_dict["Birthdate"] = get_birthdate(html)
-    star_dict["Deathdate"] = get_deathdate(html)
-    star_dict["Spouses"] = get_spouses(html)
-    star_dict["Children"] = get_children(html)
-    star_dict["NetWorth"] = get_networth(html)
-    star_dict["Nationality"] = get_nationality(html)
+def add_data(star_dict, html):
+    infobox = html.find("table", {"class": "infobox"})
+    if infobox is not None:    
+        star_dict["Birthdate"] = get_birthdate(infobox)
+        star_dict["Deathdate"] = get_deathdate(infobox)
+        star_dict["Spouses"] = get_spouses(infobox)
+        star_dict["Children"] = get_children(infobox)
+    else:
+        star_dict["Birthdate"] = ""
+        star_dict["Deathdate"] = ""
+        star_dict["Spouses"] = ""
+        star_dict["Children"] = ""
+    #star_dict["NetWorth"] = get_networth(html)
+    #star_dict["Nationality"] = get_nationality(html)
     return star_dict
 
-def get_birthdate(html):
-    infobox = html.find("table", {"class": "infobox"})
+def get_birthdate(infobox):
     for row in infobox.find_all("tr"):
         if row.th is not None and row.th.text=="Born":
             born_data = row.td.text
@@ -48,8 +54,7 @@ def get_birthdate(html):
                 return match.group()
     return ""
 
-def get_deathdate(html):
-    infobox = html.find("table", {"class": "infobox"})
+def get_deathdate(infobox):
     for row in infobox.find_all("tr"):
         if row.th is not None and row.th.text=="Died":
             death_data = row.td.text
@@ -60,8 +65,7 @@ def get_deathdate(html):
                 return match.group()
     return ""
 
-def get_spouses(html):
-    infobox = html.find("table", {"class": "infobox"})
+def get_spouses(infobox):
     for row in infobox.find_all("tr"):
         if row.th is not None and row.th.text=="Spouse(s)":
             spouse_data = row.td.text
@@ -69,8 +73,7 @@ def get_spouses(html):
             return len(marriage_dates)
     return ""
 
-def get_children(html):
-    infobox = html.find("table", {"class": "infobox"})
+def get_children(infobox):
     for row in infobox.find_all("tr"):
         if row.th is not None and row.th.text=="Children":
             return row.td.text.strip()
